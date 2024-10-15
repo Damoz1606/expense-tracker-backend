@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model AuthCredential {
+  id       Int       @id @default(autoincrement())
+  email    String    @unique @db.VarChar(64)
+  password String    @db.VarChar(64)
+  userId   Int       @unique @db.Int
+  keyStore KeyStore?
+
+  @@index(map: "idx_credential_email", fields: [email])
+}
+
+model KeyStore {
+  id               Int            @id @default(autoincrement())
+  key              String         @unique @db.VarChar(64)
+  crendential      AuthCredential @relation(fields: [authCredentialId], references: [id])
+  authCredentialId Int            @unique
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  username String   @db.VarChar(64)
+  budgets  Budget[]
+}
+
+model Budget {
+  id      Int       @id @default(autoincrement())
+  name    String    @unique @db.VarChar(64)
+  budget  Decimal   @db.Decimal(10, 2)
+  user    User?     @relation(fields: [userId], references: [id])
+  userId  Int?
+  Expense Expense[]
+}
+
+model Expense {
+  id       Int      @id @default(autoincrement())
+  name     String
+  amount   Decimal  @db.Decimal(10, 2)
+  createAt DateTime @default(now())
+  budget   Budget   @relation(fields: [budgetId], references: [id])
+  budgetId Int
+}
