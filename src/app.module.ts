@@ -5,6 +5,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino'
 import authConfig from './shared/config/auth.config';
 import serverConfig, { ServerConfig, ServerConfigName } from './shared/config/server.config';
+import { AuthModule } from './auth/auth.module';
+import { KeyStoreModule } from './key-store/key-store.module';
+import { BudgetModule } from './budget/budget.module';
+import { ExpenseModule } from './expense/expense.module';
 
 @Module({
   imports: [
@@ -40,7 +44,11 @@ import serverConfig, { ServerConfig, ServerConfigName } from './shared/config/se
       },
       inject: [ConfigService]
     }),
-    PrismaModule
+    PrismaModule,
+    AuthModule,
+    KeyStoreModule,
+    BudgetModule,
+    ExpenseModule
   ]
 })
 export class AppModule { }
