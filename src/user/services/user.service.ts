@@ -11,9 +11,9 @@ export class UserService {
         @Inject(AuthService) private readonly authService: AuthService
     ) { }
 
-    async create(data: UserRequest): Promise<User> {
+    async create({ password, ...data }: UserRequest): Promise<User> {
         const user = await this.repository.create({ data });
-        await this.authService.create({ ...data, userId: user.id });
+        await this.authService.create({ email: data.email, password, userId: user.id });
         return user;
     }
 

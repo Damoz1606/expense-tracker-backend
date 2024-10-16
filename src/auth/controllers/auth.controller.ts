@@ -4,7 +4,8 @@ import { CurrentUser } from '../decorators/current-user.decorator';
 import { plainToInstance } from 'class-transformer';
 import { TokenRSDto } from '../dto/response/token.dto';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { LoginAuth } from '../dto/request/login.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -13,6 +14,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @HttpCode(200)
+  @ApiBody({ type: LoginAuth })
   @Post('login')
   async login(
     @CurrentUser() user: number

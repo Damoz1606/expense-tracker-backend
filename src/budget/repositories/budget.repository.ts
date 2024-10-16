@@ -17,7 +17,7 @@ export class BudgetRepository extends PrismaRepository<Prisma.BudgetDelegate>([
     "findUniqueOrThrow",
     "update",
     "updateMany",
-    "upsert"
+    "upsert",
 ]) {
     constructor(
         @Inject(PrismaService) prisma: PrismaService
