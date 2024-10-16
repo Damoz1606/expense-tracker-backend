@@ -8,6 +8,7 @@ import serverConfig, { ServerConfig, ServerConfigName } from './shared/config/se
 import { AuthModule } from './auth/auth.module';
 import { BudgetModule } from './budget/budget.module';
 import { ExpenseModule } from './expense/expense.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -46,7 +47,8 @@ import { ExpenseModule } from './expense/expense.module';
     PrismaModule,
     AuthModule,
     BudgetModule,
-    ExpenseModule
+    ExpenseModule,
+    UserModule
   ]
 })
 export class AppModule { }
