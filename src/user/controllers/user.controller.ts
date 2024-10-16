@@ -1,12 +1,14 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { UserRequest } from '../dto/request/user.base.dto';
 import { User } from '../dto/response/user.base.dto';
 import { plainToInstance } from 'class-transformer';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('User')
+@UseGuards(JwtAuthGuard)
 @Controller('user')
 export class UserController {
   constructor(private readonly service: UserService) { }
@@ -19,6 +21,7 @@ export class UserController {
     return plainToInstance(User, user);
   }
 
+  @ApiBearerAuth()
   @Get()
   async findOne(
     @CurrentUser() user: number

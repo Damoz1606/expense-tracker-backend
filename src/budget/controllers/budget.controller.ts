@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { BudgetService } from '../services/budget.service';
 import { Budget } from '../dto/response/budget.base.dto';
 import { BudgetRequest } from '../dto/request/buget.base.dto';
@@ -7,9 +7,12 @@ import { plainToInstance } from 'class-transformer';
 import { BudgetArray } from '../dto/response/budget-array.dto';
 import { BudgetWithExpenses } from '../dto/response/budget-with-expenses.dto';
 import { BudgetRequestPatch } from '../dto/request/buget.patch.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('Budget')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('budgets')
 export class BudgetController {
   constructor(private readonly service: BudgetService) { }

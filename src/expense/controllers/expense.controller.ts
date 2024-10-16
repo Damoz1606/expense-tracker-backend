@@ -1,13 +1,16 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards } from '@nestjs/common';
 import { ExpenseService } from '../services/expense.service';
 import { ExpenseRequest } from '../dto/request/expense.base.dto';
 import { plainToInstance } from 'class-transformer';
 import { Expense } from '../dto/response/expense.base.dto';
 import { ExpenseArray } from '../dto/response/expense-array.dto';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('Expense')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('expenses')
 export class ExpenseController {
   constructor(private readonly service: ExpenseService) { }
