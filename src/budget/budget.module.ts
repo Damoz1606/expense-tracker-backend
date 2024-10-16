@@ -13,7 +13,7 @@ import { BudgetActivityService } from './services/budget-activity.service';
   providers: [
     BudgetRepository,
     BudgetActivityService,
-    BudgetService,
+    BudgetService
   ],
 })
 export class BudgetModule { }
