@@ -4,7 +4,9 @@ import { CurrentUser } from '../decorators/current-user.decorator';
 import { plainToInstance } from 'class-transformer';
 import { TokenRSDto } from '../dto/response/token.dto';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }

@@ -5,7 +5,9 @@ import { plainToInstance } from 'class-transformer';
 import { Expense } from '../dto/response/expense.base.dto';
 import { ExpenseArray } from '../dto/response/expense-array.dto';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Expense')
 @Controller('expenses')
 export class ExpenseController {
   constructor(private readonly service: ExpenseService) { }

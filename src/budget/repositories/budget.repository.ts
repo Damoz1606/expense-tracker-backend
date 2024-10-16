@@ -4,7 +4,7 @@ import PrismaRepository from "src/shared/prisma/prisma.repository";
 import { PrismaService } from "src/shared/prisma/prisma.service";
 
 @Injectable()
-export class ExpenseRepository extends PrismaRepository<Prisma.ExpenseDelegate>([
+export class BudgetRepository extends PrismaRepository<Prisma.BudgetDelegate>([
     "aggregate",
     "count",
     "create",
@@ -22,6 +22,6 @@ export class ExpenseRepository extends PrismaRepository<Prisma.ExpenseDelegate>(
     constructor(
         @Inject(PrismaService) prisma: PrismaService
     ) {
-        super(prisma.expense);
+        super(prisma.budget);
     }
 }
