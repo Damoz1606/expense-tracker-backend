@@ -5,8 +5,10 @@ import { ExtractJwt, Strategy } from "passport-jwt";
 import { TokenPayload } from "../token/token.payload";
 import { AuthConfig, AuthConfigName } from "src/shared/config/auth.config";
 
+export const StrategyName: string = 'jwt-strategy';
+
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-strategy') {
+export class JwtStrategy extends PassportStrategy(Strategy, StrategyName) {
     constructor(
         configService: ConfigService
     ) {

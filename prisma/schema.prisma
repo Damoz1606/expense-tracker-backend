@@ -18,16 +18,8 @@ model AuthCredential {
   email    String    @unique @db.VarChar(64)
   password String    @db.VarChar(64)
   userId   Int       @unique @db.Int
-  keyStore KeyStore?
 
   @@index(map: "idx_credential_email", fields: [email])
-}
-
-model KeyStore {
-  id               Int            @id @default(autoincrement())
-  key              String         @unique @db.VarChar(64)
-  crendential      AuthCredential @relation(fields: [authCredentialId], references: [id])
-  authCredentialId Int            @unique
 }
 
 model User {

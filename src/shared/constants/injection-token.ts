@@ -1,0 +1,1 @@
+export const VALIDATOR = "VALIDATOR"

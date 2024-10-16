@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from './shared/prisma/prisma.module';
-import Joi from 'joi';
+import * as Joi from 'joi';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino'
 import authConfig from './shared/config/auth.config';
 import serverConfig, { ServerConfig, ServerConfigName } from './shared/config/server.config';
 import { AuthModule } from './auth/auth.module';
-import { KeyStoreModule } from './key-store/key-store.module';
 import { BudgetModule } from './budget/budget.module';
 import { ExpenseModule } from './expense/expense.module';
 
@@ -46,7 +45,6 @@ import { ExpenseModule } from './expense/expense.module';
     }),
     PrismaModule,
     AuthModule,
-    KeyStoreModule,
     BudgetModule,
     ExpenseModule
   ]
