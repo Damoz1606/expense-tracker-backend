@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { BudgetRepository } from '../repositories/budget.repository';
 import { BudgetRequest } from '../dto/request/buget.base.dto';
 import { Budget } from '../dto/response/budget.base.dto';
@@ -12,7 +12,7 @@ export class BudgetService {
 
   async create(user: number, data: BudgetRequest): Promise<Budget> {
     const current = await this.repository.create({ data: { ...data, userId: user } });
-    if (!current) new NotFoundException();
+    if (!current) new BadRequestException();
     const { budget, ...newBudget } = current;
     return { ...newBudget, budget: budget.toNumber() };
   }
