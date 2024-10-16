@@ -28,5 +28,8 @@ import { VALIDATOR } from 'src/shared/constants/injection-token';
     LocalStrategy,
     JwtStrategy
   ],
+  exports: [
+    AuthService
+  ]
 })
 export class AuthModule { }
