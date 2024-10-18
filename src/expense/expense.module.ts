@@ -4,6 +4,7 @@ import { ExpenseController } from './controllers/expense.controller';
 import { ExpenseRepository } from './repositories/expense.repository';
 import { ExpenseSearchService } from './services/expense-search.service';
 import { ExpenseSearchController } from './controllers/expense-search.controller';
+import { ExpenseEventService } from './services/expense-event.service';
 
 @Module({
   controllers: [
@@ -12,6 +13,7 @@ import { ExpenseSearchController } from './controllers/expense-search.controller
   ],
   providers: [
     ExpenseRepository,
+    ExpenseEventService,
     ExpenseService,
     ExpenseSearchService
   ],

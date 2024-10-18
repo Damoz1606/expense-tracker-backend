@@ -4,11 +4,13 @@ import { BudgetRequest } from '../dto/request/buget.base.dto';
 import { Budget } from '../dto/response/budget.base.dto';
 import { BudgetWithExpenses } from '../dto/response/budget-with-expenses.dto';
 import { plainToInstance } from 'class-transformer';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class BudgetService {
   constructor(
-    @Inject(BudgetRepository) private readonly repository: BudgetRepository
+    @Inject(BudgetRepository) private readonly repository: BudgetRepository,
+    @Inject(MailerService) private readonly mailer: MailerService
   ) { }
 
   /**
@@ -92,5 +94,40 @@ export class BudgetService {
     if (!budget) new NotFoundException();
 
     return plainToInstance(Budget, budget);
+  }
+
+  /**
+   * Checks if the budget credit has not been surpassed by the expenses
+   * @param id - Budget unique identifier
+   */
+  async checkBudgetExpenses(id: number): Promise<void> {
+    const budget = await this.repository.findFirst({
+      where: { id }, select: {
+        budget: true,
+        name: true,
+        user: {
+          select: {
+            username: true,
+            email: true
+          }
+        }, expenses: {
+          select: { amount: true }
+        }
+      }
+    });
+    const spend = budget.expenses.reduce((prev, curr) => prev + curr.amount, 0);
+    if (budget.budget <= spend) {
+      this.mailer.send({
+        recipients: [{
+          address: budget.user.email,
+          name: budget.user.email
+        }],
+        subject: 'Credit Alert',
+        text: `Hi ${budget.user.username},\n\n 
+        There was registered a new expense, that consumes your credit from <b>${budget.name}</b>\n
+        You can expand your credit in your dashboard\n\n
+        Best regards,`
+      });
+    }
   }
 }

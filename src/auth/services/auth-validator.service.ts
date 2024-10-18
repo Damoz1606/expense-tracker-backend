@@ -16,7 +16,7 @@ export class AuthValidationService implements IValidator {
      * @returns User unique identifier
      */
     async validate({ email, password }: { email: string, password: string }): Promise<number> {
-        const user = await this.repository.findFirst({ where: { email: email } });
+        const user = await this.repository.findFirst({ where: { email: email, status: true } });
         if (!user) throw new NotFoundException();
         const validPassword = await compare(password, user.password);
         if (!validPassword) throw new UnauthorizedException();

@@ -14,12 +14,24 @@ datasource db {
 }
 
 model AuthCredential {
-  id       Int    @id @default(autoincrement())
-  email    String @unique @db.VarChar(64)
-  password String @db.VarChar(64)
-  userId   Int    @unique @db.Integer
+  id              Int              @id @default(autoincrement())
+  email           String           @unique @db.VarChar(64)
+  password        String           @db.VarChar(64)
+  status          Boolean          @default(false) @db.Boolean
+  userId          Int              @unique @db.Integer
+  AuthVerificator AuthVerificator?
 
   @@index(map: "idx_credential_email", fields: [email])
+}
+
+model AuthVerificator {
+  id               Int            @id @default(autoincrement())
+  key              String         @unique @db.VarChar(64)
+  status           Boolean        @default(true) @db.Boolean
+  credential       AuthCredential @relation(fields: [authCredentialId], references: [id], onDelete: Cascade)
+  authCredentialId Int            @unique
+
+  @@index(map: "idx_key", fields: [key])
 }
 
 model User {

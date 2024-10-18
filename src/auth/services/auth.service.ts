@@ -4,13 +4,15 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthCredential } from '@prisma/client';
 import { AuthCredentialRepository } from '../repositories/auth.repository';
 import { hash } from 'bcrypt'
+import { AuthVerificatorService } from './auth-verificator.service';
 
 @Injectable()
 export class AuthService {
 
   constructor(
     @Inject(JwtService) private readonly jwtService: JwtService,
-    @Inject(AuthCredentialRepository) private readonly repository: AuthCredentialRepository
+    @Inject(AuthCredentialRepository) private readonly repository: AuthCredentialRepository,
+    @Inject(AuthVerificatorService) private readonly verificatorService: AuthVerificatorService
   ) { }
 
   /**
@@ -32,7 +34,17 @@ export class AuthService {
   async create(data: { email: string, password: string, userId: number }): Promise<Omit<AuthCredential, 'password'>> {
     const password: string = await hash(data.password, 8);
     const auth = await this.repository.create({ data: { ...data, password } });
+    await this.verificatorService.create(auth.id);
     return auth;
+  }
+
+  /**
+   * Activates user credentials
+   * @param id 
+   */
+  async activate(key: string): Promise<void> {
+    const auth = await this.verificatorService.validateCredential(key);
+    await this.repository.update({ where: { id: auth }, data: { status: true } });
   }
 
   /**

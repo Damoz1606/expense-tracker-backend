@@ -11,6 +11,7 @@ export class MailerService {
     constructor(
         @Inject(MODULE_OPTIONS_TOKEN) options: MailerOptions
     ) {
+        console.log(options);
         this.default = options.mail;
         this.transporter = createTransport({
             host: options.host,

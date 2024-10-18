@@ -2,13 +2,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ExpenseRepository } from '../repositories/expense.repository';
 import { Expense } from '../dto/response/expense.base.dto';
 import { ExpenseRequest } from '../dto/request/expense.base.dto';
-import { BudgetService } from 'src/budget/services/budget.service';
+import { ExpenseEventService } from './expense-event.service';
 
 @Injectable()
 export class ExpenseService {
     constructor(
         @Inject(ExpenseRepository) private readonly repository: ExpenseRepository,
-        @Inject(BudgetService) private readonly budgetService: BudgetService
+        @Inject(ExpenseEventService) private readonly event: ExpenseEventService
     ) { }
 
     /**
@@ -33,6 +33,7 @@ export class ExpenseService {
             }
         });
 
+        this.event.emitExpenseCreated({ budget, ...data });
         return { ...newExpense, amount: newExpense.amount, budget: newExpense.budget.name };
     }
 

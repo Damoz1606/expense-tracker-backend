@@ -11,6 +11,7 @@ import { ExpenseModule } from './expense/expense.module';
 import { UserModule } from './user/user.module';
 import { MailerModule } from './mailer/mailer.module';
 import smtpConfig, { SmtpConfig, SmtpConfigName } from './shared/config/smtp.config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import smtpConfig, { SmtpConfig, SmtpConfigName } from './shared/config/smtp.con
       validationSchema: Joi.object({
         PORT: Joi.number().optional(),
         NODE_ENV: Joi.string().required(),
+        EMAIL_VALIDATION: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRATION: Joi.number().min(60).required(),
         SMTP_HOST: Joi.string().required(),
@@ -67,6 +69,7 @@ import smtpConfig, { SmtpConfig, SmtpConfigName } from './shared/config/smtp.con
         mail: config.get<SmtpConfig>(SmtpConfigName).appMail,
       })
     }),
+    EventEmitterModule.forRoot(),
     PrismaModule,
     AuthModule,
     BudgetModule,

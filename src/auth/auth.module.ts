@@ -9,6 +9,8 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { AuthCredentialRepository } from './repositories/auth.repository';
 import { VALIDATOR } from 'src/shared/constants/injection-token';
+import { AuthVerificatorRepository } from './repositories/auth-verificator.repository';
+import { AuthVerificatorService } from './services/auth-verificator.service';
 
 @Module({
   imports: [
@@ -19,8 +21,10 @@ import { VALIDATOR } from 'src/shared/constants/injection-token';
   ],
   controllers: [AuthController],
   providers: [
+    AuthVerificatorRepository,
     AuthCredentialRepository,
     AuthService,
+    AuthVerificatorService,
     {
       provide: VALIDATOR,
       useClass: AuthValidationService
