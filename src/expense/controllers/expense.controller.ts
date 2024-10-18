@@ -40,7 +40,7 @@ export class ExpenseController {
 
   @Delete(':id')
   async remove(@Param('id') id: number): Promise<any> {
-    await this.service.deleteOne(id);
+    await this.service.deleteOne(+id);
     return ''
   }
 }
