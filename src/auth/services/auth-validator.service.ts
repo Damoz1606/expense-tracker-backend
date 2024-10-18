@@ -10,6 +10,11 @@ export class AuthValidationService implements IValidator {
         @Inject(AuthCredentialRepository) private readonly repository: AuthCredentialRepository
     ) { }
 
+    /**
+     * Validates the user credentials
+     * @param param0 - Credentials composes by email and password
+     * @returns User unique identifier
+     */
     async validate({ email, password }: { email: string, password: string }): Promise<number> {
         const user = await this.repository.findFirst({ where: { email: email } });
         if (!user) throw new NotFoundException();

@@ -6,4 +6,7 @@ const getCurrentUserFromContext = (ctx: ExecutionContext) => {
     return request.user;
 }
 
+/**
+ * Returns the data inside request object, by default is a TokenPayload
+ */
 export const CurrentUser = createParamDecorator((_data: unknown, context: ExecutionContext) => getCurrentUserFromContext(context));
