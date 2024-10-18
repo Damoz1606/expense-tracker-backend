@@ -47,7 +47,7 @@ export class BudgetController {
     @Param('id') id: number,
     @Body() data: BudgetRequest
   ): Promise<Budget> {
-    const budget = await this.service.updateOne(id, data);
+    const budget = await this.service.updateOne(+id, data);
     return plainToInstance(Budget, budget);
   }
 
@@ -55,7 +55,7 @@ export class BudgetController {
   async deleteOne(
     @Param('id') id: number,
   ): Promise<any> {
-    await this.service.deleteOne(id);
+    await this.service.deleteOne(+id);
     return ''
   }
 }

@@ -43,6 +43,6 @@ model Expense {
   name     String   @db.VarChar(64)
   amount   Float    @db.DoublePrecision
   createAt DateTime @default(now())
-  budget   Budget   @relation(fields: [budgetId], references: [id])
+  budget   Budget   @relation(fields: [budgetId], references: [id], onDelete: Cascade)
   budgetId Int
 }
