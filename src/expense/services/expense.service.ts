@@ -24,13 +24,15 @@ export class ExpenseService {
                 }
             }
         });
-        return { ...newExpense, amount: newExpense.amount.toNumber(), budget: newExpense.budget.name };
+        return { ...newExpense, amount: newExpense.amount, budget: newExpense.budget.name };
     }
 
-    async findMany(budget: number): Promise<Expense[]> {
+    async findMany(user: number): Promise<Expense[]> {
         const expenses = await this.repository.findMany({
             where: {
-                budgetId: budget
+                budget: {
+                    userId: user
+                }
             },
             select: {
                 id: true,
@@ -47,7 +49,7 @@ export class ExpenseService {
                 createAt: 'desc'
             }
         });
-        return expenses.map(e => new Expense({ ...e, budget: e.budget.name }));
+        return expenses.map(e => ({ ...e, budget: e.budget.name }));
     }
 
     async findLatest(user: number, take: number = 5): Promise<Expense[]> {
@@ -73,7 +75,7 @@ export class ExpenseService {
             },
             take: take
         });
-        return expenses.map(e => new Expense({ ...e, budget: e.budget.name }));
+        return expenses.map(e => ({ ...e, budget: e.budget.name }));
     }
 
     async deleteOne(id: number): Promise<Expense> {
@@ -91,6 +93,6 @@ export class ExpenseService {
                 }
             }
         });
-        return { ...expense, amount: expense.amount.toNumber(), budget: expense.budget.name };
+        return { ...expense, amount: expense.amount, budget: expense.budget.name };
     }
 }

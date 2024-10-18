@@ -3,6 +3,7 @@ import { BudgetRepository } from '../repositories/budget.repository';
 import { BudgetRequest } from '../dto/request/buget.base.dto';
 import { Budget } from '../dto/response/budget.base.dto';
 import { BudgetWithExpenses } from '../dto/response/budget-with-expenses.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class BudgetService {
@@ -14,7 +15,7 @@ export class BudgetService {
     const current = await this.repository.create({ data: { ...data, userId: user } });
     if (!current) new BadRequestException();
     const { budget, ...newBudget } = current;
-    return { ...newBudget, budget: budget.toNumber() };
+    return { ...newBudget, budget: budget };
   }
 
   async findMany(user: number): Promise<Budget[]> {
@@ -24,7 +25,7 @@ export class BudgetService {
       }
     });
 
-    return budget.map(e => new Budget(e));
+    return budget.map(e => plainToInstance(Budget, e));
   }
 
   async findOne(id: number): Promise<BudgetWithExpenses> {
@@ -42,7 +43,7 @@ export class BudgetService {
       }
     });
     if (!budget) new NotFoundException();
-    return new BudgetWithExpenses(budget);
+    return plainToInstance(BudgetWithExpenses, budget);
   }
 
   async updateOne(id: number, data: Omit<BudgetRequest, 'budget'>): Promise<Budget> {
@@ -53,7 +54,7 @@ export class BudgetService {
 
     if (!budget) new NotFoundException();
 
-    return new Budget(budget);
+    return plainToInstance(Budget, budget);
   }
 
   async deleteOne(id: number): Promise<Budget> {
@@ -63,6 +64,6 @@ export class BudgetService {
 
     if (!budget) new NotFoundException();
 
-    return new Budget(budget);
+    return plainToInstance(Budget, budget);
   }
 }

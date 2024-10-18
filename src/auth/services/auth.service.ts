@@ -14,7 +14,7 @@ export class AuthService {
   ) { }
 
   async login(user: number): Promise<string> {
-    const tokenPayload = new TokenPayload(user.toFixed.toString());
+    const tokenPayload = new TokenPayload(user);
     const token = this.jwtService.sign({ ...tokenPayload });
     return token;
   }

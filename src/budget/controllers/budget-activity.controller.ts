@@ -5,6 +5,7 @@ import { CurrentUser } from "src/auth/decorators/current-user.decorator";
 import { plainToInstance } from "class-transformer";
 import { BudgetActivityArray } from "../dto/response/budget-activity-array.dto";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { TokenPayload } from "src/auth/token/token.payload";
 
 @ApiTags('Budget')
 @ApiBearerAuth()
@@ -17,9 +18,9 @@ export class BudgetActivityController {
 
     @Get()
     async findActivity(
-        @CurrentUser() user: number
+        @CurrentUser() user: TokenPayload
     ): Promise<BudgetActivityArray> {
-        const data = await this.service.findMany(user);
+        const data = await this.service.findMany(user.sub);
         return plainToInstance(BudgetActivityArray, { data });
     }
 }

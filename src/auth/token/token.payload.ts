@@ -1,8 +1,8 @@
 export class TokenPayload {
-    public readonly sub: string;
+    public readonly sub: number;
 
     constructor(
-        subject: string,
+        subject: number,
     ) {
         this.sub = subject;
     }

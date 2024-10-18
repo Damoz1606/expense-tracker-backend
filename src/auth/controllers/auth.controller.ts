@@ -6,6 +6,7 @@ import { TokenRSDto } from '../dto/response/token.dto';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { LoginAuth } from '../dto/request/login.dto';
+import { TokenPayload } from '../token/token.payload';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -17,9 +18,9 @@ export class AuthController {
   @ApiBody({ type: LoginAuth })
   @Post('login')
   async login(
-    @CurrentUser() user: number
+    @CurrentUser() user: TokenPayload
   ): Promise<TokenRSDto> {
-    const access = await this.authService.login(user);
+    const access = await this.authService.login(user.sub);
     return plainToInstance(TokenRSDto, { access });
   }
 }

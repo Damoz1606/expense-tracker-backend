@@ -7,6 +7,7 @@ import { ExpenseArray } from '../dto/response/expense-array.dto';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { TokenPayload } from 'src/auth/token/token.payload';
 
 @ApiTags('Expense')
 @ApiBearerAuth()
@@ -21,19 +22,19 @@ export class ExpenseController {
     return plainToInstance(Expense, expense);
   }
 
-  @Get('/:budget')
+  @Get()
   async findMany(
-    @Param('budget') budget: number
+    @CurrentUser() user: TokenPayload
   ): Promise<ExpenseArray> {
-    const data = await this.service.findMany(budget);
+    const data = await this.service.findMany(user.sub);
     return plainToInstance(ExpenseArray, { data });
   }
 
-  @Get('latest')
+  @Get('top/latest')
   async findLatest(
-    @CurrentUser() user: number
+    @CurrentUser() user: TokenPayload
   ): Promise<ExpenseArray> {
-    const data = await this.service.findLatest(user);
+    const data = await this.service.findLatest(user.sub);
     return plainToInstance(ExpenseArray, { data });
   }
 

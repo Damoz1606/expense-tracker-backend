@@ -8,6 +8,7 @@ import { BudgetArray } from '../dto/response/budget-array.dto';
 import { BudgetWithExpenses } from '../dto/response/budget-with-expenses.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { TokenPayload } from 'src/auth/token/token.payload';
 
 @ApiTags('Budget')
 @ApiBearerAuth()
@@ -19,17 +20,17 @@ export class BudgetController {
   @Post()
   async create(
     @Body() body: BudgetRequest,
-    @CurrentUser() user: number
+    @CurrentUser() user: TokenPayload
   ): Promise<Budget> {
-    const budget = await this.service.create(user, body);
+    const budget = await this.service.create(user.sub, body);
     return plainToInstance(Budget, budget);
   }
 
   @Get()
   async findMany(
-    @CurrentUser() user: number
+    @CurrentUser() user: TokenPayload
   ): Promise<BudgetArray> {
-    const data = await this.service.findMany(user);
+    const data = await this.service.findMany(user.sub);
     return plainToInstance(BudgetArray, { data });
   }
 
@@ -37,7 +38,7 @@ export class BudgetController {
   async findOne(
     @Param('id') id: number
   ): Promise<BudgetWithExpenses> {
-    const data = await this.service.findOne(id);
+    const data = await this.service.findOne(+id);
     return plainToInstance(BudgetWithExpenses, data);
   }
 

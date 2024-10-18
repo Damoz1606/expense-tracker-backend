@@ -26,8 +26,9 @@ export class BudgetActivityService {
         const { budget, expenses, ...current } = data;
         return {
             ...current,
-            budget: budget.toNumber(),
-            spend: expenses.reduce((prev, curr) => prev + curr.amount.toNumber(), 0)
+            budget: budget,
+            items: expenses.length,
+            spend: expenses.reduce((prev, curr) => prev + curr.amount, 0)
         }
     }
 
@@ -47,8 +48,9 @@ export class BudgetActivityService {
         });
         return budgets.map(({ expenses, budget, ...data }) => ({
             ...data,
-            budget: budget.toNumber(),
-            spend: expenses.reduce((prev, curr) => prev + curr.amount.toNumber(), 0)
+            items: expenses.length,
+            budget: budget,
+            spend: expenses.reduce((prev, curr) => prev + curr.amount, 0)
         }));
     }
 }
