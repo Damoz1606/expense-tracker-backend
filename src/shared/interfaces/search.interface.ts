@@ -6,11 +6,11 @@ export interface ISearch<T> {
      * @param filter 
      * @returns Object inside a promise
      */
-    search: (filter: FilterMetaDto) => Promise<T[]>;
+    search: (filter: FilterMetaDto, extras: any) => Promise<T[]>;
     /**
      * Count the number of pages available with a specific filter
      * @param filter 
      * @returns PageDto object inside a promise
      */
-    count: (filter: CountMetaDto) => Promise<PageDto>
+    count: (filter: CountMetaDto, extras: any) => Promise<PageDto>
 }

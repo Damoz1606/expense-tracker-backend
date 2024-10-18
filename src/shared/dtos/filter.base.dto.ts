@@ -1,5 +1,5 @@
 import { Expose, Type } from "class-transformer";
-import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from "class-validator";
+import { IsInt, IsJSON, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from "class-validator";
 
 export interface PageMeta {
     skip: number;
@@ -21,6 +21,11 @@ export class CountMetaDto implements Partial<FilterMeta>, Omit<PageMeta, 'skip'>
     @IsString()
     @IsNotEmpty()
     public readonly filter?: string;
+
+    @IsOptional()
+    @IsJSON()
+    @IsNotEmpty()
+    public readonly extras?: any;
 }
 
 export class FilterMetaDto extends CountMetaDto implements Partial<FilterMeta>, PageMeta {

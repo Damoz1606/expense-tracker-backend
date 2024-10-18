@@ -18,12 +18,12 @@ export class SearchService {
         }
     }
 
-    async search(key: SearchKey, filter: FilterMetaDto): Promise<any[]> {
-        return this.service[key].search(filter);
+    async search(key: SearchKey, filter: FilterMetaDto, extras: any): Promise<any[]> {
+        return this.service[key].search(filter, extras);
     }
 
-    async count(key: SearchKey, filter: CountMetaDto): Promise<PageDto> {
-        return this.service[key].count(filter);
+    async count(key: SearchKey, filter: CountMetaDto, extras: any): Promise<PageDto> {
+        return this.service[key].count(filter, extras);
     }
 
 }
