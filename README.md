@@ -1,85 +1,108 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Expense Tracker Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This is a [Nest.js](http://nestjs.com) project.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Local Installation
 
-## Description
+#### System requirements
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+| Technology | Version  |
+| ---------- | -------- |
+| Node       | ^18.17.1 |
+| Postgres   | ^15      |
 
-## Project setup
+#### Enviroment
+
+This project uses a .env file, so create a `.env` file in the root of the project and add the following structure:
 
 ```bash
-$ pnpm install
+DATABASE_URL=database_url
+
+PORT=application_port # eg. 3000
+NODE_ENV=development
+
+EMAIL_VALIDATION=path_where_user_validate_credentials # eg. https://frontend.com/validate
+
+JWT_SECRET=jwt_secret
+JWT_EXPIRATION=time_in_miliseconds # eg. 86400 (1 day)
+
+
+SMTP_HOST=smpt_host # eg. smtp.your_domain.com
+SMTP_PORT=smpt_port # eg. 465
+SMTP_SECURE=true # Change it to false if the connection is not secure
+SMTP_USER=your_smtp_user
+SMTP_PASSWORD=your_smtp_password
+SMTP_APP_NAME=app_name
+SMTP_APP_MAIL=smpt_sender_mail
 ```
 
-## Compile and run the project
+#### Installation
+
+Let's run this application as a local server. To achive that you must:
+
+1. Install Node
+2. Install npm, yarn, pnpm or bun (By preference pnpm)
+3. Clone the repository
+4. Install dependencies by running:
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
 ```
 
-## Run tests
+5. Run the development server:
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+npm run start:dev
+# or
+yarn start:dev
+# or
+pnpm start:dev
+# or
+bun start:dev
 ```
 
-## Resources
+After the system is running, open [http://localhost:3000](http://localhost:3000) in your browser to see the result. In the above example the .env file is supposed to be using port 3000.
 
-Check out a few resources that may come in handy when working with NestJS:
+#### Is really online?
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+To make sure that the system is running without problems check the logs or go to the browser and navigate to [http://localhost:3000/docs](http://localhost:3000/docs), this will open the Swagger documentation.
 
-## Support
+## Web deployment
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Open [https://expense-tracker-backend-kbea.onrender.com/docs](https://expense-tracker-backend-kbea.onrender.com/docs) in your browser to see the result on the web.
 
-## Stay in touch
+## Documentation
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+By default this project uses JSDoc, so if you open it in VsCode and call a function you'll see a description of it.
 
-## License
+Also, this project was made using Swagger, so if you open [http://localhost:3000/docs](http://localhost:3000/docs), there you'll see the documentation for each enpoint. Note that most of them requires a JWT token, so first you must need to be logged.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## External Libraries
+
+This system used external libraries to work.
+
+### Prisma
+
+This ORM is a useful tool to connect the application with the database. Also, help to create the migrations and apply them in the database.
+
+### Nodemailer
+
+Connects the application with an smtp server, so the application can send emails to any registered user.
+
+### Pino
+
+Is logger that make things a kind a faster thank of its lighter nature.
+
+### Uuid
+
+Create random string values
+
+### Passwort
+
+Allow the local authentication strategy and the jwt authorization.
