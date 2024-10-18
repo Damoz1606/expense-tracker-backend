@@ -2,11 +2,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ExpenseRepository } from '../repositories/expense.repository';
 import { Expense } from '../dto/response/expense.base.dto';
 import { ExpenseRequest } from '../dto/request/expense.base.dto';
+import { BudgetService } from 'src/budget/services/budget.service';
 
 @Injectable()
 export class ExpenseService {
     constructor(
-        @Inject(ExpenseRepository) private readonly repository: ExpenseRepository
+        @Inject(ExpenseRepository) private readonly repository: ExpenseRepository,
+        @Inject(BudgetService) private readonly budgetService: BudgetService
     ) { }
 
     /**
@@ -22,6 +24,7 @@ export class ExpenseService {
                 amount: true,
                 createAt: true,
                 name: true,
+                budgetId: true,
                 budget: {
                     select: {
                         name: true
@@ -29,6 +32,7 @@ export class ExpenseService {
                 }
             }
         });
+
         return { ...newExpense, amount: newExpense.amount, budget: newExpense.budget.name };
     }
 

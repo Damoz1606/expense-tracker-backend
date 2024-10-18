@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { BudgetModule } from './budget/budget.module';
 import { ExpenseModule } from './expense/expense.module';
 import { UserModule } from './user/user.module';
+import { MailerModule } from './mailer/mailer.module';
+import smtpConfig, { SmtpConfig, SmtpConfigName } from './shared/config/smtp.config';
 
 @Module({
   imports: [
@@ -19,10 +21,18 @@ import { UserModule } from './user/user.module';
         NODE_ENV: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRATION: Joi.number().min(60).required(),
+        SMTP_HOST: Joi.string().required(),
+        SMTP_PORT: Joi.number().required(),
+        SMTP_SECURE: Joi.boolean().required(),
+        SMTP_USER: Joi.string().required(),
+        SMTP_PASSWORD: Joi.string().required(),
+        SMTP_APP_NAME: Joi.string().required(),
+        SMTP_APP_MAIL: Joi.string().required(),
       }),
       load: [
         authConfig,
         serverConfig,
+        smtpConfig
       ]
     }),
     LoggerModule.forRootAsync({
@@ -44,11 +54,24 @@ import { UserModule } from './user/user.module';
       },
       inject: [ConfigService]
     }),
+    MailerModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        host: config.get<SmtpConfig>(SmtpConfigName).host,
+        port: config.get<SmtpConfig>(SmtpConfigName).port,
+        secure: config.get<SmtpConfig>(SmtpConfigName).secure,
+        user: config.get<SmtpConfig>(SmtpConfigName).user,
+        password: config.get<SmtpConfig>(SmtpConfigName).password,
+        name: config.get<SmtpConfig>(SmtpConfigName).appName,
+        mail: config.get<SmtpConfig>(SmtpConfigName).appMail,
+      })
+    }),
     PrismaModule,
     AuthModule,
     BudgetModule,
     ExpenseModule,
-    UserModule
+    UserModule,
   ]
 })
 export class AppModule { }
