@@ -9,6 +9,11 @@ export class ExpenseService {
         @Inject(ExpenseRepository) private readonly repository: ExpenseRepository
     ) { }
 
+    /**
+     * Creates a expense and link it to a budget
+     * @param param0 - Data required to creates a expnese
+     * @returns Expense object inside a promise
+     */
     async create({ budget, ...data }: ExpenseRequest): Promise<Expense> {
         const newExpense = await this.repository.create({
             data: { ...data, budgetId: budget },
@@ -27,6 +32,11 @@ export class ExpenseService {
         return { ...newExpense, amount: newExpense.amount, budget: newExpense.budget.name };
     }
 
+    /**
+     * Retrives all the expenses that owns a user
+     * @param user - Unique identifier of the owner
+     * @returns Array of Expense objects inside a promise
+     */
     async findMany(user: number): Promise<Expense[]> {
         const expenses = await this.repository.findMany({
             where: {
@@ -52,6 +62,12 @@ export class ExpenseService {
         return expenses.map(e => ({ ...e, budget: e.budget.name }));
     }
 
+    /**
+     * Retrives the latests expenses that a user owns
+     * @param user - Unique identifier of the owner
+     * @param take - Number of items required in the array
+     * @returns Array of Expense objects inside a promise
+     */
     async findLatest(user: number, take: number = 5): Promise<Expense[]> {
         const expenses = await this.repository.findMany({
             where: {
@@ -78,6 +94,11 @@ export class ExpenseService {
         return expenses.map(e => ({ ...e, budget: e.budget.name }));
     }
 
+    /**
+     * Deletes one expense by it given identifier
+     * @param id - Unique identifier of an expense
+     * @returns Expense inside a promise
+     */
     async deleteOne(id: number): Promise<Expense> {
         const expense = await this.repository.delete({
             where: { id },
