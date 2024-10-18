@@ -8,6 +8,11 @@ export class BudgetActivityService {
         @Inject(BudgetRepository) private readonly repository: BudgetRepository
     ) { }
 
+    /**
+     * Finds one budget and return its activity
+     * @param id - Unique identifier of a budget 
+     * @returns BudgetActivity inside a promise
+     */
     async findOne(id: number): Promise<BudgetActivity> {
         const data = await this.repository.findFirst({
             where: { id: id },
@@ -32,6 +37,11 @@ export class BudgetActivityService {
         }
     }
 
+    /**
+     * Retrives many budget activities from a user
+     * @param user - Unique identifier of the owner of the budgets
+     * @returns Array of BudgetActivity inside a promise
+     */
     async findMany(user: number): Promise<BudgetActivity[]> {
         const budgets = await this.repository.findMany({
             where: { userId: user },
