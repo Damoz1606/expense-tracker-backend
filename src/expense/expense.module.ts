@@ -3,9 +3,11 @@ import { ExpenseService } from './services/expense.service';
 import { ExpenseController } from './controllers/expense.controller';
 import { ExpenseRepository } from './repositories/expense.repository';
 import { ExpenseSearchService } from './services/expense-search.service';
+import { ExpenseSearchController } from './controllers/expense-search.controller';
 
 @Module({
   controllers: [
+    ExpenseSearchController,
     ExpenseController
   ],
   providers: [
@@ -13,8 +15,5 @@ import { ExpenseSearchService } from './services/expense-search.service';
     ExpenseService,
     ExpenseSearchService
   ],
-  exports: [
-    ExpenseSearchService
-  ]
 })
 export class ExpenseModule { }
