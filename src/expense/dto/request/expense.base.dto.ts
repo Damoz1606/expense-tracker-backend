@@ -12,6 +12,7 @@ export class ExpenseRequest implements Omit<Expense, 'id' | 'createAt' | 'budget
     public readonly amount: number;
 
     @IsNumber()
+    @Min(1)
     public readonly budget: number;
 
 }
