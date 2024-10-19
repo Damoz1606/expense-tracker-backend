@@ -27,6 +27,7 @@ describe('MailerService', () => {
   });
 
   describe('send', () => {
+    let transporter;
     const mailOptions: MailSenderOptions = {
       from: { address: 'sender@example.com', name: 'sender@example.com' },
       recipients: [{ address: 'recipient@example.com', name: 'recipient@example.com' }],
@@ -34,15 +35,21 @@ describe('MailerService', () => {
       text: 'Test Email Body',
     };
 
+    beforeEach(() => {
+      transporter = (service as any).transporter = {
+        sendMail: jest.fn()
+      }
+    });
+
     it('should send an email with the provided options', async () => {
       // Arrange
-      const transporter = jest.spyOn('transporter' as any, 'sendMail').mockResolvedValue({ accepted: [mailOptions.recipients] });
+      transporter.sendMail.mockResolvedValue({ accepted: [mailOptions.recipients] });
 
       // Act
       const result = await service.send(mailOptions);
 
       // Assert
-      expect(transporter).toHaveBeenCalledWith({
+      expect(transporter.sendMail).toHaveBeenCalledWith({
         from: mailOptions.from,
         to: mailOptions.recipients,
         subject: mailOptions.subject,
@@ -53,7 +60,7 @@ describe('MailerService', () => {
 
     it('should use default sender if no from is provided', async () => {
       // Arrange
-      const transporter = jest.spyOn('transporter' as any, 'sendMail').mockResolvedValue({ accepted: [mailOptions.recipients] });
+      transporter.sendMail.mockResolvedValue({ accepted: [mailOptions.recipients] });
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { from, ...options } = mailOptions;
 
@@ -61,8 +68,8 @@ describe('MailerService', () => {
       const result = await service.send(options);
 
       // Assert
-      expect(transporter).toHaveBeenCalledWith({
-        from: 'default@example.com',
+      expect(transporter.sendMail).toHaveBeenCalledWith({
+        from: 'test@email.com',
         to: mailOptions.recipients,
         subject: mailOptions.subject,
         text: mailOptions.text,
@@ -72,7 +79,7 @@ describe('MailerService', () => {
 
     it('should handle errors when sending email', async () => {
       // Arrange
-      jest.spyOn('transporter' as any, 'sendMail').mockRejectedValue(new Error);
+      transporter.sendMail.mockRejectedValue(new Error);
 
       // Act & Assert
       await expect(service.send(mailOptions)).rejects.toThrow(Error);

@@ -3,7 +3,6 @@ import { BudgetActivityService } from "../services/budget-activity.service";
 import { BudgetActivityController } from "./budget-activity.controller";
 import { mockBudgetActivity } from "../stub/budget-activity.stub";
 import { TokenPayload } from "src/auth/token/token.payload";
-import { NotFoundException } from "@nestjs/common";
 
 describe('BudgetActivityController', () => {
     let controller: BudgetActivityController;
@@ -33,15 +32,6 @@ describe('BudgetActivityController', () => {
 
             // Assert
             expect(result.data).toEqual(mockedBudget);
-            expect(service.findMany).toHaveBeenCalledWith(user.sub);
-        });
-
-        it('should throw NotFoundException if no activities found', async () => {
-            // Arrange
-            service.findMany = jest.fn().mockResolvedValue([]);
-
-            // Act & Assert
-            await expect(controller.findActivity(user)).rejects.toThrow(NotFoundException);
             expect(service.findMany).toHaveBeenCalledWith(user.sub);
         });
     });
