@@ -14,5 +14,5 @@ const BudgetStub = (id: number): BudgetWithExpenses => ({
     expenses: [...Array(Math.floor(Math.random() * 5))].map(ExpenseStub)
 });
 
-export const mockBudget = () => BudgetStub(1);
-export const mockBudgets = (count: number = 5) => [...Array(count)].map(BudgetStub);
+export const mockBudgetActivity = () => BudgetStub(1);
+export const mockBudgetActivities = (count: number = 5) => [...Array(count)].map(BudgetStub);
