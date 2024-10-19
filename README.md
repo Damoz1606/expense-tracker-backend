@@ -83,6 +83,20 @@ By default this project uses JSDoc, so if you open it in VsCode and call a funct
 
 Also, this project was made using Swagger, so if you open [http://localhost:3000/docs](http://localhost:3000/docs), there you'll see the documentation for each enpoint. Note that most of them requires a JWT token, so first you must need to be logged.
 
+## Test
+
+If you want to run unit tests, just run: 
+
+```bash
+npm run test
+# or
+yarn test
+# or
+pnpm test
+# or
+bun test
+```
+
 ## External Libraries
 
 This system used external libraries to work.
