@@ -4,17 +4,16 @@ import { AuthCredentialRepository } from "../repositories/auth.repository";
 import { AuthVerificatorService } from "./auth-verificator.service";
 import { TestBed } from "@automock/jest";
 import { TokenPayload } from "../token/token.payload";
-import bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt'
 import { mockAuthCredential } from "../stub/auth.stub";
-
-jest.mock('bcrypt', () => ({
-  compare: jest.fn(),
-}));
 
 describe('AuthService', () => {
   let service: AuthService;
   let jwtService: jest.Mocked<JwtService>;
-  let repository: jest.Mocked<AuthCredentialRepository>;
+  let repository: jest.Mocked<{
+    create: (...args: any[]) => any,
+    update: (...args: any[]) => any
+  }>;
   let verificatorService: jest.Mocked<AuthVerificatorService>;
 
   beforeEach(async () => {
@@ -22,8 +21,12 @@ describe('AuthService', () => {
 
     service = unit;
     jwtService = unitRef.get(JwtService);
-    repository = unitRef.get(AuthCredentialRepository);
+    repository = unitRef.get(AuthCredentialRepository as any);
     verificatorService = unitRef.get(AuthVerificatorService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('login', () => {

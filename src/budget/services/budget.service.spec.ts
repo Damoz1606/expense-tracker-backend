@@ -5,18 +5,29 @@ import { TestBed } from '@automock/jest';
 import { BudgetRequest } from '../dto/request/buget.base.dto';
 import { mockPrismaBudget, mockPrismaBudgets } from '../stub/prisma-budget.stub';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { mockPrismaExpenses } from 'src/expense/stub/prisma-expense.stub';
 
 describe('BudgetService', () => {
   let service: BudgetService;
-  let repository: jest.Mocked<BudgetRepository>;
+  let repository: jest.Mocked<{
+    create: (...args: any[]) => any,
+    findMany: (...args: any[]) => any,
+    findFirst: (...args: any[]) => any,
+    update: (...args: any[]) => any,
+    delete: (...args: any[]) => any,
+  }>;
   let mailer: jest.Mocked<MailerService>;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(BudgetService).compile();
 
     service = unit;
-    repository = unitRef.get(BudgetRepository);
+    repository = unitRef.get(BudgetRepository as any);
     mailer = unitRef.get(MailerService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('create', () => {
@@ -39,7 +50,7 @@ describe('BudgetService', () => {
 
     it('should throw BadRequestException if creation fails', async () => {
       // Arrange
-      repository.create.mockResolvedValue(null);
+      repository.create.mockResolvedValue(undefined);
 
       // Act & Assert
       await expect(service.create(userId, budgetData)).rejects.toThrow(BadRequestException);
@@ -98,7 +109,7 @@ describe('BudgetService', () => {
       const budgetId = 1;
 
       // Act
-      repository.findFirst.mockResolvedValue(null);
+      repository.findFirst.mockResolvedValue(undefined);
 
       // Assert
       await expect(service.findOne(budgetId))
@@ -130,7 +141,7 @@ describe('BudgetService', () => {
 
     it('should throw NotFoundException if budget is not found', async () => {
       // Arrange
-      repository.update.mockResolvedValue(null);
+      repository.update.mockResolvedValue(undefined);
 
       // Act && Assert
       await expect(service.updateOne(budgetId, updateData)).rejects.toThrow(NotFoundException);
@@ -156,22 +167,20 @@ describe('BudgetService', () => {
     it('should throw NotFoundException if budget is not found', async () => {
       // Arrange
       const budgetId = 1;
+      repository.delete.mockResolvedValue(undefined);
 
-      // Act
-      repository.delete.mockResolvedValue(null);
-
-      // Assert
+      // Act & Assert
       await expect(service.deleteOne(budgetId)).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('checkBudgetExpenses', () => {
     const budgetId = 1;
-    const mockedBudget = { ...mockPrismaBudget(), user: { email: 'test@email.com' } };
+    const mockedBudget = { ...mockPrismaBudget(), user: { email: 'test@email.com' }, expenses: mockPrismaExpenses(5) };
 
     it('should send an email alert if expenses exceed budget', async () => {
       // Arrange
-      repository.findFirst.mockResolvedValue(mockedBudget);
+      repository.findFirst.mockResolvedValue({ ...mockedBudget, expenses: [{ amount: 9999999 }] });
 
       // Act
       await service.checkBudgetExpenses(budgetId);
@@ -186,7 +195,7 @@ describe('BudgetService', () => {
 
     it('should not send an email if expenses do not exceed budget', async () => {
       // Arrange
-      repository.findFirst.mockResolvedValue(mockedBudget);
+      repository.findFirst.mockResolvedValue({ ...mockedBudget, expenses: [] });
 
       // Act
       await service.checkBudgetExpenses(budgetId);

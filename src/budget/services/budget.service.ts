@@ -21,7 +21,7 @@ export class BudgetService {
    */
   async create(user: number, data: BudgetRequest): Promise<Budget> {
     const current = await this.repository.create({ data: { ...data, userId: user } });
-    if (!current) new BadRequestException();
+    if (!current) throw new BadRequestException();
     const { budget, ...newBudget } = current;
     return { ...newBudget, budget: budget };
   }
@@ -60,7 +60,7 @@ export class BudgetService {
         }
       }
     });
-    if (!budget) new NotFoundException();
+    if (!budget) throw new NotFoundException();
     return plainToInstance(BudgetWithExpenses, budget);
   }
 
@@ -76,7 +76,7 @@ export class BudgetService {
       data: data
     });
 
-    if (!budget) new NotFoundException();
+    if (!budget) throw new NotFoundException();
 
     return plainToInstance(Budget, budget);
   }
@@ -90,8 +90,7 @@ export class BudgetService {
     const budget = await this.repository.delete({
       where: { id: id },
     });
-
-    if (!budget) new NotFoundException();
+    if (!budget) throw new NotFoundException();
 
     return plainToInstance(Budget, budget);
   }

@@ -8,22 +8,28 @@ import { NotFoundException } from '@nestjs/common';
 
 describe('BudgetActivityService', () => {
     let service: BudgetActivityService;
-    let repository: jest.Mocked<BudgetRepository>;
+    let repository: jest.Mocked<{
+        findFirst: (...args: any[]) => any,
+        findMany: (...args: any[]) => any
+    }>;
 
     beforeEach(async () => {
         const { unit, unitRef } = TestBed.create(BudgetActivityService).compile();
 
         service = unit;
-        repository = unitRef.get(BudgetRepository);
+        repository = unitRef.get(BudgetRepository as any);
     });
 
     describe('findOne', () => {
         const budgetId = 1;
         const mockedBudget = { ...mockPrismaBudget(), expenses: mockExpenses(5) };
+        delete mockedBudget.userId;
         const expectedValue: BudgetActivity = {
-            ...mockedBudget,
+            id: mockedBudget.id,
+            name: mockedBudget.name,
             items: mockedBudget.expenses.length,
-            spend: mockedBudget.expenses.reduce((prev, curr) => prev + curr.amount, 0)
+            spend: mockedBudget.expenses.reduce((prev, curr) => prev + curr.amount, 0),
+            budget: mockedBudget.budget
         }
 
         it('should return budget activity for a valid budget id', async () => {
@@ -64,11 +70,14 @@ describe('BudgetActivityService', () => {
 
     describe('findMany', () => {
         const userId = 1;
-        const mockedBudget = mockPrismaBudgets(5).map(e => ({ ...e, expenses: mockExpenses(5) }));
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const mockedBudget = mockPrismaBudgets(5).map(({ userId, ...e }) => ({ ...e, expenses: mockExpenses(5) }));
         const expectedValue: BudgetActivity[] = mockedBudget.map(e => ({
-            ...e,
+            id: e.id,
+            name: e.name,
             items: e.expenses.length,
-            spend: e.expenses.reduce((prev, curr) => prev + curr.amount, 0)
+            spend: e.expenses.reduce((prev, curr) => prev + curr.amount, 0),
+            budget: e.budget
         }))
 
         it('should return array of budget activities for a user', async () => {

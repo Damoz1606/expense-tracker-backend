@@ -7,21 +7,22 @@ import { mockPrismaUser } from '../stub/prisma-user.stub';
 
 describe('UserService', () => {
   let service: UserService;
-  let repository: jest.Mocked<UserRepository>;
+  let repository: jest.Mocked<{
+    create: (...args: any[]) => any,
+    findFirst: (...args: any[]) => any
+  }>;
   let authService: jest.Mocked<AuthService>;
-
+  
   beforeEach(async () => {
-    beforeEach(async () => {
-      const { unit, unitRef } = TestBed.create(UserService).compile();
+    const { unit, unitRef } = TestBed.create(UserService).compile();
 
-      service = unit;
-      repository = unitRef.get(UserRepository);
-      authService = unitRef.get(AuthService);
-    });
+    service = unit;
+    repository = unitRef.get(UserRepository as any);
+    authService = unitRef.get(AuthService);
+  });
 
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('create', () => {
@@ -38,7 +39,9 @@ describe('UserService', () => {
       const result = await service.create(userRequest);
 
       // Assert
-      expect(repository.create).toHaveBeenCalledWith({ data: userRequest });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...userRepositoryExpected } = userRequest;
+      expect(repository.create).toHaveBeenCalledWith({ data: userRepositoryExpected });
       expect(authService.create).toHaveBeenCalledWith({ email: userRequest.email, password: userRequest.password, userId: mockedUser.id });
       expect(result).toEqual(expectedUser);
     });

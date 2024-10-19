@@ -7,14 +7,18 @@ import { mockPrismaExpense, mockPrismaExpenses } from '../stub/prisma-expense.st
 
 describe('ExpenseService', () => {
   let service: ExpenseService;
-  let repository: jest.Mocked<ExpenseRepository>;
+  let repository: jest.Mocked<{
+    create: (...args: any[]) => any,
+    findMany: (...args: any[]) => any,
+    delete: (...args: any[]) => any,
+  }>;
   let event: jest.Mocked<ExpenseEventService>;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(ExpenseService).compile();
 
     service = unit
-    repository = unitRef.get(ExpenseRepository);
+    repository = unitRef.get(ExpenseRepository as any);
     event = unitRef.get(ExpenseEventService);
   });
 
@@ -24,8 +28,8 @@ describe('ExpenseService', () => {
 
   describe('create', () => {
     const expenseRequest: ExpenseRequest = { budget: 1, amount: 100, name: 'Test Expense' };
-    const mockedExpense = mockPrismaExpense();
-    const expectedValue = mockedExpense;
+    const mockedExpense = { ...mockPrismaExpense(), budget: { name: 'Test budget' } };
+    const expectedValue = { ...mockedExpense, budget: mockedExpense.budget.name };
 
     it('should create an expense and return it', async () => {
       // Arrange
@@ -35,8 +39,9 @@ describe('ExpenseService', () => {
       const result = await service.create(expenseRequest);
 
       // Assert
+      const { budget, ...expenseData } = expenseRequest;
       expect(repository.create).toHaveBeenCalledWith({
-        data: { ...expenseRequest, budgetId: expenseRequest.budget },
+        data: { ...expenseData, budgetId: budget },
         select: {
           id: true,
           amount: true,
@@ -58,8 +63,8 @@ describe('ExpenseService', () => {
 
   describe('findMany', () => {
     const userId = 1;
-    const mockedExpenses = mockPrismaExpenses(5);
-    const expectedValue = mockedExpenses;
+    const mockedExpenses = mockPrismaExpenses(5).map(e => ({ ...e, budget: { name: 'Test budget' } }));
+    const expectedValue = mockedExpenses.map(e => ({ ...e, budget: e.budget.name }));
 
     it('should return an array of expenses', async () => {
       // Arrange
@@ -89,8 +94,8 @@ describe('ExpenseService', () => {
   describe('findLatest', () => {
     const userId = 1;
     const take = 3;
-    const mockedExpenses = mockPrismaExpenses();
-    const expectedValue = mockedExpenses;
+    const mockedExpenses = mockPrismaExpenses().map(e => ({ ...e, budget: { name: 'Test budget' } }));
+    const expectedValue = mockedExpenses.map(e => ({ ...e, budget: e.budget.name }));
 
     it('should return the latest expenses', async () => {
       // Arrange
@@ -120,8 +125,8 @@ describe('ExpenseService', () => {
 
   describe('deleteOne', () => {
     const id = 1;
-    const mockedExpense = mockPrismaExpense();
-    const expectedValue = mockedExpense;
+    const mockedExpense = { ...mockPrismaExpense(), budget: { name: 'Test budget' } };
+    const expectedValue = { ...mockedExpense, budget: mockedExpense.budget.name };
 
     it('should delete an expense and return it', async () => {
       // Arrange

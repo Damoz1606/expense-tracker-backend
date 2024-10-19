@@ -3,16 +3,20 @@ import { AuthVerificatorRepository } from "../repositories/auth-verificator.repo
 import { AuthVerificatorService } from "./auth-verificator.service";
 import { ConfigService } from "@nestjs/config";
 import { TestBed } from "@automock/jest";
-import uuid from 'uuid';
+import * as uuid from 'uuid';
 import { NotFoundException } from "@nestjs/common";
+import { AuthConfigName } from "src/shared/config/auth.config";
 
 jest.mock('uuid', () => ({
-    v4: jest.fn(),
-}));
+    v4: jest.fn()
+}))
 
 describe('AuthVerificatorService', () => {
     let service: AuthVerificatorService;
-    let repository: jest.Mocked<AuthVerificatorRepository>;
+    let repository: jest.Mocked<{
+        create: (...args: any[]) => any,
+        update: (...args: any[]) => any
+    }>;
     let mailer: jest.Mocked<MailerService>;
     let config: jest.Mocked<ConfigService>;
 
@@ -20,9 +24,13 @@ describe('AuthVerificatorService', () => {
         const { unit, unitRef } = TestBed.create(AuthVerificatorService).compile();
 
         service = unit;
-        repository = unitRef.get(AuthVerificatorRepository);
+        repository = unitRef.get(AuthVerificatorRepository as any);
         mailer = unitRef.get(MailerService);
         config = unitRef.get(ConfigService);
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
     });
 
     describe('create', () => {
@@ -33,7 +41,7 @@ describe('AuthVerificatorService', () => {
 
         it('should create a verification key and send an email', async () => {
             // Arrange
-            const spyUuid = jest.spyOn(uuid, 'v4').mockReturnValue(key);
+            jest.spyOn(uuid, 'v4').mockReturnValue(key);
             repository.create.mockResolvedValue({ credential: { email } } as any);
             config.get.mockReturnValue(authConfig);
             mailer.send.mockResolvedValue(undefined);
@@ -42,7 +50,8 @@ describe('AuthVerificatorService', () => {
             const result = await service.create(authId);
 
             // Assert
-            expect(spyUuid).toHaveBeenCalled();
+            expect(uuid.v4).toHaveBeenCalled();
+            expect(config.get).toHaveBeenCalledWith(AuthConfigName);
             expect(repository.create).toHaveBeenCalledWith({
                 data: { authCredentialId: authId, key },
                 select: {

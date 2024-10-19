@@ -3,21 +3,26 @@ import { AuthCredentialRepository } from '../repositories/auth.repository';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { AuthValidationService } from './auth-validator.service';
 import { mockPrismaAuthCredential } from '../stub/prisma-auth.stub';
-import bcrypt from 'bcrypt';
-
-jest.mock('bcrypt', () => ({
-    compare: jest.fn(),
-}));
+import * as bcrypt from 'bcrypt';
 
 describe('AuthValidationService', () => {
     let service: AuthValidationService;
-    let repository: jest.Mocked<AuthCredentialRepository>;
+    let repository: jest.Mocked<{ findFirst: (...args: any[]) => any; }>;
 
     beforeEach(async () => {
-        const { unit, unitRef } = TestBed.create(AuthValidationService).compile();
+        const { unit, unitRef } = TestBed.create(AuthValidationService)
+            .mock(AuthCredentialRepository)
+            .using({
+                findFirst: jest.fn()
+            })
+            .compile();
 
         service = unit;
-        repository = unitRef.get(AuthCredentialRepository);
+        repository = unitRef.get(AuthCredentialRepository as any);
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
     });
 
     describe('validate', () => {
@@ -29,20 +34,20 @@ describe('AuthValidationService', () => {
         it('should return userId for valid credentials', async () => {
             // Arrange
             repository.findFirst.mockResolvedValue(mockedCredential);
-            const spyBcrypt = jest.spyOn(bcrypt, 'compare').mockResolvedValue(true as never);
+            jest.spyOn(bcrypt, 'compare').mockResolvedValue(true as never);
 
             // Act
             const result = await service.validate({ email, password });
 
             // Assert
             expect(repository.findFirst).toHaveBeenCalledWith({ where: { email, status: true } });
-            expect(spyBcrypt).toHaveBeenCalledWith(password, mockedCredential.password);
+            expect(bcrypt.compare).toHaveBeenCalledWith(password, mockedCredential.password);
             expect(result).toBe(expectedValue);
         });
 
         it('should throw NotFoundException if user does not exist', async () => {
             // Arrange
-            (repository.findFirst as jest.Mock).mockResolvedValue(null);
+            repository.findFirst.mockResolvedValue(null);
 
             // Act & Assert
             await expect(service.validate({ email, password })).rejects.toThrow(NotFoundException);
@@ -52,12 +57,12 @@ describe('AuthValidationService', () => {
         it('should throw UnauthorizedException if password is invalid', async () => {
             // Arrange
             repository.findFirst.mockResolvedValue(mockedCredential);
-            const spyBcrypt = jest.spyOn(bcrypt, 'compare').mockResolvedValue(false as never);
+            jest.spyOn(bcrypt, 'compare').mockResolvedValue(false as never);
 
             // Act & Assert
             await expect(service.validate({ email, password })).rejects.toThrow(UnauthorizedException);
             expect(repository.findFirst).toHaveBeenCalledWith({ where: { email, status: true } });
-            expect(spyBcrypt).toHaveBeenCalledWith(password, mockedCredential.password);
+            expect(bcrypt.compare).toHaveBeenCalledWith(password, mockedCredential.password);
         });
     });
 });
