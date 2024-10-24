@@ -55,7 +55,19 @@ pnpm install
 bun install
 ```
 
-5. Run the development server:
+5. Migrate database schema:
+
+```bash
+npx prisma migrate dev
+# or
+yarn dlx prisma migrate dev
+# or
+pnpm dlx prisma migrate dev
+# or
+bunx prisma migrate dev
+```
+
+6. Run the development server:
 
 ```bash
 npm run start:dev
@@ -66,6 +78,7 @@ pnpm start:dev
 # or
 bun start:dev
 ```
+
 
 After the system is running, open [http://localhost:3000](http://localhost:3000) in your browser to see the result. In the above example the .env file is supposed to be using port 3000.
 
